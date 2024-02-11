@@ -1,0 +1,164 @@
+class Node: #node for single linked list
+    def __init__(self,data):
+        self.data=data
+        self.next=None
+class DNode:# node for doublelinkedlist
+    def __init__(self,data):
+        self.data=data
+        self.next=None
+        self.prev=None
+class Linkedlist(): #creating and inserting elements in the linkedlist
+    def __init__(self):
+        self.head=None
+        self.tail=None
+    def insert(self,data):#inserting elements in the linked list
+        newnode=Node(data)
+        if self.head==None: # if the single linked list is empty we do this operation
+            self.head=newnode
+            self.tail=newnode
+        else:
+            self.tail.next=newnode
+            self.tail=newnode
+    def show(self): #to print elements in the linked list or we can say to print elements in the notepad
+        current=self.head
+        while current:
+            print(current.data)
+            current=current.next
+class Doublelinkedlist():#creating and inserting elements into the doublelinked list
+    def __init__(self):
+        self.head=None
+        self.tail=None
+    def insert(self,data):#inserting notes refrences(addresses) into the double linked list
+        newnode=DNode(data)
+        if self.head==None: # if the double linked list is empty we do this operation
+            self.head=newnode
+            self.tail=newnode
+        else:
+            self.tail.next=newnode
+            self.tail.next.prev=self.tail
+            self.tail=newnode
+    def show(self): #to print elements in the double linked list 
+        current=self.head
+        while current:
+            print(current.data)
+            current=current.next
+def open(d,flag):# to navigate doublelinked list to select the notepad you want to open
+    i=1
+    temppage=d.head
+    print('type: "NexT" to turn to next page, "PreV" to previous page ,"SelecT" to print the page, "PagE" to view the page number')
+    while 1:# loop to navigate to next and previous notepads as many times we want to
+        pageop=input()
+        if pageop=='NexT':#goes to next notepad
+            if i+1<=pages:
+                i+=1
+                temppage=temppage.next
+                print('note no :{}'.format(i))
+            else:#the next operation failed because we did not created that many notepads
+                print('u did not creat that many pages,NexT operation Failed')
+        elif pageop=='PreV':
+            if i-1>0:
+                i-=1
+                temppage=temppage.prev
+                print('note no :{}'.format(i))
+            else:#the prev operation failed because its going below zero
+                print('u r going below first page ,PreV operation Failed')
+        elif pageop=='SelecT':#to select that notepad
+            if flag==1: # i use this to return the address of the notepad for edit,search,copypaste functions 
+                return temppage.data
+            print('---------------------------------Note :{} -----------------------------------'.format(i))#if we are not using edit,search,copypaste function
+            temppage.data.show()                                                                            #then we can just print the notepad
+            print('-----------------------------------------------------------------------------')
+            break
+        elif pageop=='PagE':#to view the current notepad number we are on
+            print('note no:',i)
+def edit(d):# to edit the line in notepad
+    print('which note do u want to edit')
+    flag=1 #we use this to get the address of that node that we want to edit
+    tempnodeofdll=open(d,flag)
+    temphead=tempnodeofdll.head
+    flag=0#revert it to zero
+    while temphead:#loop to know which line u want to edit
+        print('do you want to edit this line? type "Yes" else press enter: ',temphead.data)
+        eornot=input()
+        if eornot=='Yes':#if Yes we edit that line by takign new input to that line 
+            print('type the line')
+            editline=input()
+            temphead.data=editline
+        temphead=temphead.next
+def search(d):# to search the element in the notepad
+    print('which note do u want to search')
+    flag=1#same as above to get the address of that notepad 
+    tempnodeofdll=open(d,flag)
+    temphead=tempnodeofdll.head
+    flag=0#revert the flag to zero
+    j=1#to count the page numbers
+    print('which word u want to find:')
+    searchword=input()
+    while temphead:#to check everyline till we found the specified element
+        if searchword in temphead.data:
+            print('the word is in line no :{}  and the line is : {}'.format(j,temphead.data))
+            choice=input('end the search or continue? "End" to end else press enter\n\n')#we can continue to search if there are more 
+            if choice=='End':#to end the search
+                return
+        j+=1
+        temphead=temphead.next
+    print('No more specified elements found')#prints if there are no elements like that
+def copyandpaste(d):#to copyandpaste line from one notepad to anothernotepad
+    print('which note do u want to copy from')
+    flag=1#same logic as above
+    tempnodeofdll=open(d,flag)
+    temphead=tempnodeofdll.head
+    flag=0#reverting value
+    while temphead:#loop to select which line you want to copy
+        print('do you want to copy this line? type "Yes" else press enter: ',temphead.data)
+        eornot=input()
+        if eornot=='Yes':
+            print('Copied!')
+            tempcopy=temphead.data
+            print('where do you want to paste this?')
+            flag=1#same logic
+            tempnodeofdll=open(d,flag)
+            temphead2=tempnodeofdll.head
+            flag=0#same logic
+            while temphead2:#loop to select at which place u want to replace
+                print('do you want to replace : "{}"  with the copied one'.format(temphead2.data))
+                tinput=input('press "Yes" to paste else press enter')
+                if tinput=='Yes':#to confirm u want to paste there
+                    temphead2.data=tempcopy
+                temphead2=temphead2.next
+        temphead=temphead.next
+n=Linkedlist() #creating object of single linked list
+d=Doublelinkedlist() #creating object of doublelinkedlist
+pages=0
+while 1: #loop to select an operation multiple times
+    print('select an operation: "CreatE" to create new note,  "OpEn" to open notes,  "EdiT" to edit a note, "SearcH" to search the word , "CopY" to copy and paste\n')
+    op=input()
+    if op=='CreatE':# to create notepad
+        print('type "ExiT" to exit document"\n')
+        while 1:
+            x=input()
+            if x=='ExiT':
+                break
+            n.insert(x)
+        temp=n
+        print('do you want to save?:type "Save" else press enter')
+        sav=input()
+        if sav=='Save': #saves the refrence of the notepad that we created in double linked list
+            d.insert(temp)
+            pages+=1
+        n=Linkedlist() #creating new object or we can say refreshing with new address
+    if op=='OpEn': #to open the notepad by using doublelinkedlist
+        if pages<=0:
+            print('you have not created any notes.')
+        else:
+            open(d,0)
+    if op=='EdiT':#to edit the notepad
+        edit(d)
+    if op=="SearcH":#to search the specified word in the notepad 
+        search(d)
+    if op=="CopY":#to copy a line from one notepad to another notepad 
+        copyandpaste(d)
+
+    
+
+
