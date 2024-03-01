@@ -45,31 +45,31 @@ class Doublelinkedlist():#creating and inserting elements into the doublelinked 
 def open(d,flag):# to navigate doublelinked list to select the notepad you want to open
     i=1
     temppage=d.head
-    print('type: "NexT" to turn to next page, "PreV" to previous page ,"SelecT" to print the page, "PagE" to view the page number')
+    print('type: "next" to turn to next page, "prev" to previous page ,"select" to print the page, "page" to view the page number')
     while 1:# loop to navigate to next and previous notepads as many times we want to
         pageop=input()
-        if pageop=='NexT':#goes to next notepad
+        if pageop=='next':#goes to next notepad
             if i+1<=pages:
                 i+=1
                 temppage=temppage.next
                 print('note no :{}'.format(i))
             else:#the next operation failed because we did not created that many notepads
                 print('u did not creat that many pages,NexT operation Failed')
-        elif pageop=='PreV':
+        elif pageop=='prev':
             if i-1>0:
                 i-=1
                 temppage=temppage.prev
                 print('note no :{}'.format(i))
             else:#the prev operation failed because its going below zero
                 print('u r going below first page ,PreV operation Failed')
-        elif pageop=='SelecT':#to select that notepad
+        elif pageop=='select':#to select that notepad
             if flag==1: # i use this to return the address of the notepad for edit,search,copypaste functions 
                 return temppage.data
             print('---------------------------------Note :{} -----------------------------------'.format(i))#if we are not using edit,search,copypaste function
             temppage.data.show()                                                                            #then we can just print the notepad
             print('-----------------------------------------------------------------------------')
             break
-        elif pageop=='PagE':#to view the current notepad number we are on
+        elif pageop=='page':#to view the current notepad number we are on
             print('note no:',i)
         else:
             print('invalid input!')
@@ -79,14 +79,49 @@ def edit(d):# to edit the line in notepad
     tempnodeofdll=open(d,flag)
     temphead=tempnodeofdll.head
     flag=0#revert it to zero
-    while temphead:#loop to know which line u want to edit
-        print('do you want to edit this line? type "Yes" else press enter: ',temphead.data)
-        eornot=input()
-        if eornot=='Yes':#if Yes we edit that line by takign new input to that line 
-            print('type the line')
-            editline=input()
-            temphead.data=editline
-        temphead=temphead.next
+    eop=input('which operation u want to choose: "insert" to insert "delete" to delete a line" "modify" to modify a line  : ')
+    if eop=='insert':
+        prev=None
+        p=1
+        while temphead:
+            print('do you want to insert it as line no:  |{}| "yes" or press enter'.format(p))
+            iop=input()
+            if iop=='yes':
+                newnode=Node(input('enter your line:'))
+                if prev:
+                    prev.next=newnode
+                else:
+                    tempnodeofdll.head=newnode
+                newnode.next=temphead
+                return
+            prev=temphead
+            temphead=temphead.next
+            p+=1
+    elif eop=='delete':
+        prev=None
+        while temphead:
+            print('do you want to delete this line:|| {} || "yes" or press enter'.format(temphead.data))
+            dop=input()
+            if dop=='yes':
+                if prev:
+                    prev.next=temphead.next
+                else:
+                    tempnodeofdll.head=tempnodeofdll.head.next
+                print('line:"{}" is deleted '.format(temphead.data))
+                return
+            prev=temphead
+            temphead=temphead.next
+    elif eop=='modify':
+        while temphead:#loop to know which line u want to edit
+            print('do you want to edit this line? type "Yes" else press enter: ',temphead.data)
+            eornot=input()
+            if eornot=='Yes':#if Yes we edit that line by takign new input to that line 
+                print('type the line')
+                editline=input()
+                temphead.data=editline
+            temphead=temphead.next
+    else:
+        print('INVALID INPUT')
 def search(d):# to search the element in the notepad
     print('which note do u want to search')
     flag=1#same as above to get the address of that notepad 
@@ -133,9 +168,9 @@ n=Linkedlist() #creating object of single linked list
 d=Doublelinkedlist() #creating object of doublelinkedlist
 pages=0
 while 1: #loop to select an operation multiple times
-    print('select an operation: "CreatE" to create new note,  "OpEn" to open notes,  "EdiT" to edit a note, "SearcH" to search the word , "CopY" to copy and paste\n')
+    print('select an operation: "create" to create new note,  "open" to open notes,  "edit" to edit a note, "search" to search the word , "copy" to copy and paste\n')
     op=input()
-    if op=='CreatE':# to create notepad
+    if op=='create':# to create notepad
         print('type "ExiT" to exit document"\n')
         while 1:
             x=input()
@@ -152,16 +187,16 @@ while 1: #loop to select an operation multiple times
         else:
             print('did not Saved.')
         n=Linkedlist() #creating new object or we can say refreshing with new address
-    elif op=='OpEn': #to open the notepad by using doublelinkedlist
+    elif op=='open': #to open the notepad by using doublelinkedlist
         if pages<=0:
             print('you have not created any notes.')
         else:
             open(d,0)
-    elif op=='EdiT':#to edit the notepad
+    elif op=='edit':#to edit the notepad
         edit(d)
-    elif op=="SearcH":#to search the specified word in the notepad 
+    elif op=="search":#to search the specified word in the notepad 
         search(d)
-    elif op=="CopY":#to copy a line from one notepad to another notepad 
+    elif op=="copy":#to copy a line from one notepad to another notepad 
         copyandpaste(d)
     else:
         print('invalid input')
